@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BibleTime - Meditasaun Loron-Loron</title>
+
+  <!-- SNS 채팅 공유 시 이미지 카드 생성 태그 (Open Graph) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="BibleTime - Meditasaun Loron-Loron">
+  <meta property="og:description" content="Lee Bíblia no medita kada loron iha lian Tetun.">
+  <meta property="og:image" content="https://BibleTime-TL.github.io/BibleTime/thumbnail.png">
+  <meta property="og:url" content="https://BibleTime-TL.github.io/BibleTime/">
+
+  <style>
+    :root {
+      --primary-color: #0f2c59;
+      --primary-light: #1e427c;
+      --accent-color: #d97706;
+      --bg-color: #f3f5f8;
+      --card-bg: #ffffff;
+      --text-color: #262626;
+      --text-muted: #52525b;
+      --border-color: #e4e4e7;
+      --clip-bg: #fffbeb;
+      --clip-border: #f59e0b;
+      --font-size-base: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.75;
+      padding-bottom: 50px;
+    }
+
+    /* 상단 네비게이션 바 */
+    header {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .nav-container {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      background-color: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 7px 13px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: rgba(255, 255, 255, 0.26);
+    }
+
+    .btn-today {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    .btn-today:hover {
+      background-color: #b45309;
+    }
+
+    .right-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="date"] {
+      background-color: rgba(255, 255, 255, 0.94);
+      color: var(--primary-color);
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .font-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .btn-small {
+      padding: 6px 9px;
+      font-size: 0.8rem;
+    }
+
+    /* 메인 레이아웃 */
+    main {
+      max-width: 820px;
+      margin: 24px auto;
+      padding: 0 16px;
+      font-size: var(--font-size-base);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--border-color);
+      margin-bottom: 24px;
+    }
+
+    /* 상단 메타 정보 (날짜/일차 배지) */
+    .meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .date-badge {
+      background-color: #e0e7ff;
+      color: var(--primary-color);
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    .day-badge {
+      background-color: #f4f4f5;
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    .title {
+      font-size: 1.65rem;
+      color: var(--primary-color);
+      line-height: 1.35;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .passage-ref {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      margin-bottom: 22px;
+    }
+
+    /* M 요약 박스 */
+    .summary-box {
+      background-color: #f8fafc;
+      border-left: 4px solid var(--primary-color);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 28px;
+      color: #334155;
+      font-size: 0.96em;
+    }
+
+    .summary-label {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 1px 7px;
+      border-radius: 4px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* 성경 본문 섹션 (동적 생성) */
+    .passage-section {
+      margin-bottom: 26px;
+    }
+
+    .passage-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-subtitle {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+    }
+
+    .passage-content {
+      color: var(--text-color);
+      word-break: keep-all;
+    }
+
+    .passage-content sup {
+      color: var(--accent-color);
+      font-weight: 700;
+      font-size: 0.75em;
+      margin-right: 3px;
+      margin-left: 2px;
+    }
+
+    /* BIBLE CLIP 박스 */
+    .bible-clip {
+      background-color: var(--clip-bg);
+      border: 1px solid #fde68a;
+      border-left: 5px solid var(--clip-border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 28px;
+    }
+
+    .bible-clip-header {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #b45309;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .clip-entry + .clip-entry {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed #fcd34d;
+    }
+
+    .bible-clip-word {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #78350f;
+      margin-bottom: 4px;
+    }
+
+    .bible-clip-def {
+      font-size: 0.95rem;
+      color: #92400e;
+      line-height: 1.6;
+    }
+
+    /* 고정 묵상 질문 카드 (매일 동일) */
+    .questions-card {
+      border-top: 5px solid var(--primary-color);
+    }
+
+    .questions-card h2 {
+      font-size: 1.25rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      font-weight: 800;
+    }
+
+    .q-item {
+      padding: 14px 0;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .q-item:first-of-type {
+      padding-top: 0;
+    }
+
+    .q-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .q-title {
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 4px;
+      font-size: 1.02em;
+    }
+
+    .q-desc {
+      color: var(--text-muted);
+      font-size: 0.95em;
+    }
+
+    /* 모바일 반응형 미디어 쿼리 */
+    @media (max-width: 600px) {
+      main {
+        padding: 0 12px;
+        margin: 14px auto;
+      }
+
+      .card {
+        padding: 20px 16px;
+        border-radius: 10px;
+      }
+
+      .title {
+        font-size: 1.35rem;
+      }
+
+      .nav-container {
+        padding: 10px 12px;
+      }
+
+      .btn {
+        padding: 6px 10px;
+        font-size: 0.82rem;
+      }
+
+      input[type="date"] {
+        font-size: 0.8rem;
+        padding: 5px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 네비게이션 -->
+  <header>
+    <div class="nav-container">
+      <div class="nav-buttons">
+        <button class="btn" onclick="changeDate(-1)" title="Yesterday">← Loron Kuar</button>
+        <button class="btn btn-today" onclick="resetToToday()" title="Today">Ohin</button>
+      </div>
+      <div class="right-tools">
+        <input type="date" id="date-picker" onchange="onDatePick(this.value)" aria-label="Select date">
+        <div class="font-controls">
+          <button class="btn btn-small" onclick="adjustFontSize(-1)" title="Decrease font">A-</button>
+          <button class="btn btn-small" onclick="adjustFontSize(1)" title="Increase font">A+</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 매일 바뀌는 동적 영역 (JSON 데이터) -->
+    <article class="card">
+      <div class="meta-bar">
+        <span class="date-badge" id="display-date">--</span>
+        <span class="day-badge" id="display-day" style="display:none;">--</span>
+      </div>
+
+      <h1 class="title" id="title">Loading...</h1>
+      <div class="passage-ref" id="passage-ref"></div>
+
+      <div class="summary-box" id="summary-box">
+        <span class="summary-label">M</span>
+        <span id="summary"></span>
+      </div>
+
+      <!-- 본문 섹션들이 동적으로 삽입되는 컨테이너 -->
+      <div id="sections-container"></div>
+
+      <!-- BIBLE CLIP 영역 -->
+      <div class="bible-clip" id="bible-clip-box" style="display:none;">
+        <div class="bible-clip-header">📌 BIBLE CLIP</div>
+
+        <div class="clip-entry" id="clip-entry-first" style="display:none;">
+          <div class="bible-clip-word" id="clip-word-first"></div>
+          <div class="bible-clip-def" id="clip-def-first"></div>
+        </div>
+
+        <div class="clip-entry" id="clip-entry-second" style="display:none;">
+          <div class="bible-clip-word" id="clip-word-second"></div>
+          <div class="bible-clip-def" id="clip-def-second"></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 매일 동일한 고정 질문 영역 -->
+    <section class="card questions-card">
+      <h2>Perguntas ba Meditasaun</h2>
+
+      <div class="q-item">
+        <div class="q-title">1. Versikulu ida</div>
+        <div class="q-desc">Hili ba! Versikulu ida ne'ebé fó bensaun ba ó. Medita ba! No dekora versikulu ne'e.</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-title">2. Saida mak tema hosi testu ne'e?</div>
+        <div class="q-desc">Buka hatene tema kapítulu nian ba loron ohin.</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-title">3. Lia-menon Na'i</div>
+        <div class="q-desc">Na'i nia lia-menon saida ba ó liuhosi parte ohin loron?</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-title">4. Buka ba!</div>
+        <div class="q-desc">Na'i, Maromak nia karakter no saida mak Maromak halo hosi testu ne'e?</div>
+      </div>
+
+      <div class="q-item">
+        <div class="q-title">5. Oferta agradesimentu</div>
+        <div class="q-desc">Hakerek ba! Buat ne'ebé ó agradese ba ohin loron ne'e no fahe ba grupu.</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let currentDate = new Date();
+    let currentFontSize = 16;
+    const loadedMonths = {}; // 월별 JSON 캐시 저장소
+
+    // 영문 월 약어 배열
+    const MONTH_NAMES_EN = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+
+    // 로컬 테스트 및 파일 미존재 시 대비 내장 데이터
+    const fallbackData = {
+      "2026-11-01": {
+        "day_num": "01",
+        "title": "Halo saida mak di’ak tanba ó hetan tiha ona salvasaun",
+        "passage_ref": "Titu 3:1-15",
+        "summary": "Paulo halo estratejia atu Evanjellu ne’e bele sai efetivu liután iha mundu: hodi hasoru lei-na’in sira, autoridade sira, ema ne’ebé seidauk fiar ba Jesus no mestre falsu sira ne’ebé haksesuk malu ho pergunta beik-teen sira. Depoizde ne’e nia inklui ninia karta ho salutasaun.",
+        "sections": [
+          {
+            "section_title": "Liafuan ikus",
+            "verses": [
+              { "verse": 1, "text": "Fó-hanoin ba sira, hodi sira hakru’uk ba orden no ema sira ne’ebé iha poder, fiar metin no prontu, hodi halo servisu ne’ebé di’ak." },
+              { "verse": 2, "text": "Sira keta du’un-matak, sira keta iha problema, sira tenke pasiénsia no hahalok forsa laiha no laran di’ak ba ema hotu." },
+              { "verse": 3, "text": "Tanba ita uluk mós moris iha nakukun, laiha fiar, lakon dalan, sai atan ba líbidu oioin no tuir ita-nia gostu, moris iha violénsia no nervozu, ódiu no hirus-malu." },
+              { "verse": 4, "text": "Maibé Maromak hatudu laran di’ak, ita-nia Salvadór no domin ba ema," },
+              { "verse": 5, "text": "Nia salva tiha ona ita, tanba la’ós ita-nia hahalok di’ak ne’ebé ita halo justisa, maibé tanba Ninia laran-sadia rasik hosi moris foun no halo foun fali hosi Espíritu Santu;" },
+              { "verse": 6, "text": "ne’ebé Nia haraik tiha ona ba ita hosi Jesus Kristu mak ita-nia Salvadór," },
+              { "verse": 7, "text": "hodi ita bele moris loos hosi liafuan di’ak, direitu simu moris laiha rohan, tuir ita-nia esperansa." },
+              { "verse": 8, "text": "Liafuan ne’e loos no ha’u hakarak no iha forsa, hodi fiar metin, nune’e sira ne’ebé fiar tiha ona ba Maromak, hodi esforsu an halo buat di’ak. Ida ne’e mak di’ak no folin ba ema hotu." },
+              { "verse": 9, "text": "Hadook an hosi dezafiu ne’ebé buka ita no beik, dezafiu jenalozia, problema kona-ba lei Pentateuku, tanba buat sira ne’e la folin no saugati de’it." },
+              { "verse": 10, "text": "Ema ida ne’ebé hili tiha ona dala ida ka rua ó konsellu tiha ona, tenke dook hosi sira." },
+              { "verse": 11, "text": "Imi hatene katak ema hanesan ne’e, klaru katak sira lakon dalan tiha ona no sira-nia sala kastigu sira an rasik." },
+              { "verse": 12, "text": "Agora, ha’u haruka Artemas no Tikikus ba imi, esforusu an, hodi mai iha ha’u ne’ebé iha Nikopolis, tanba ha’u hakotu tiha ona, hodi hela iha fatin ne’e, durante iha klima malirin ne’e." },
+              { "verse": 13, "text": "Ajuda didi’ak Zenas mak ukun-na’in ne’e no Apolo, durante iha sira-nia viajen, nune’e sira labele menus ba buat ruma." },
+              { "verse": 14, "text": "No husik ita-nia ema sira mós aprende halo servisu di’ak, hodi bele hetan nesesidade ba moris ne’ebé báziku, nune’e sira-nia moris keta iha fuan." }
+            ]
+          },
+          {
+            "section_title": "Kumprimentu",
+            "verses": [
+              { "verse": 15, "text": "Kumprimentu hosi ema sira ne’ebé hamutuk ho ha’u iha ne’e no hato’o ha’u-nia kumprimentu ba sira ne’ebé hadomi ami iha fiar nia laran. Grasa hamutuk ho imi hotu!" }
+            ]
+          }
+        ],
+        "bible_clip": {
+          "word_first": "Laran-dí'ak",
+          "definition_first": "\"Apropriadu, laran-di’ak\", estadu ida ne’ebé hanoin katak; julgamentu iha sirkunstansia hotu. (Tito 3:2).",
+          "word_second": null,
+          "definition_second": null
+        }
+      }
+    };
+
+    // 날짜 포맷 헬퍼 (YYYY-MM-DD, YYYYMM)
+    function getDateParts(dateObj) {
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      return {
+        year,
+        month,
+        day,
+        dateKey: `${year}-${month}-${day}`,
+        monthKey: `${year}${month}`
+      };
+    }
+
+    // 월별 JSON 파일 비동기 로드 (캐시 활용)
+    async function loadMonthData(monthKey) {
+      if (loadedMonths[monthKey]) {
+        return loadedMonths[monthKey];
+      }
+      try {
+        const response = await fetch(`data_${monthKey}.json`);
+        if (!response.ok) throw new Error('File not found');
+        const json = await response.json();
+        loadedMonths[monthKey] = json;
+        return json;
+      } catch (err) {
+        console.warn(`data_${monthKey}.json load failed, checking fallback:`, err.message);
+        return fallbackData;
+      }
+    }
+
+    // 본문 섹션 렌더링 함수 (sections 배열 및 verse/text 분리 구조)
+    function renderSections(sections) {
+      const container = document.getElementById('sections-container');
+      container.innerHTML = '';
+
+      if (!sections || sections.length === 0) return;
+
+      sections.forEach(sec => {
+        const sectionDiv = document.createElement('div');
+        sectionDiv.className = 'passage-section';
+
+        if (sec.section_title) {
+          const h2 = document.createElement('h2');
+          h2.className = 'section-subtitle';
+          h2.innerText = sec.section_title;
+          sectionDiv.appendChild(h2);
+        }
+
+        if (sec.verses && Array.isArray(sec.verses)) {
+          const contentDiv = document.createElement('div');
+          contentDiv.className = 'passage-content';
+
+          sec.verses.forEach(v => {
+            if (v.verse !== undefined && v.verse !== null && v.verse !== '') {
+              const sup = document.createElement('sup');
+              sup.innerText = v.verse;
+              contentDiv.appendChild(sup);
+            }
+
+            const textNode = document.createTextNode((v.text || '') + ' ');
+            contentDiv.appendChild(textNode);
+          });
+
+          sectionDiv.appendChild(contentDiv);
+        }
+
+        container.appendChild(sectionDiv);
+      });
+    }
+
+    // 화면 렌더링 함수
+    async function renderDevotional(dateObj) {
+      const { year, month, day, dateKey, monthKey } = getDateParts(dateObj);
+      const monthNameEn = MONTH_NAMES_EN[dateObj.getMonth()];
+
+      // 영문 날짜 표기 (예: Nov 12, 2026)
+      document.getElementById('display-date').innerText = `${monthNameEn} ${day}, ${year}`;
+      document.getElementById('date-picker').value = dateKey;
+
+      const monthData = await loadMonthData(monthKey);
+      const item = monthData[dateKey] || fallbackData[dateKey];
+
+      if (item) {
+        const dayBadge = document.getElementById('display-day');
+        if (item.day_num) {
+          dayBadge.style.display = 'inline-block';
+          dayBadge.innerText = `Loron ${item.day_num}`;
+        } else if (item.page_num) {
+          dayBadge.style.display = 'inline-block';
+          dayBadge.innerText = `Pájina ${item.page_num}`;
+        } else {
+          dayBadge.style.display = 'none';
+        }
+
+        document.getElementById('title').innerText = item.title || "";
+        document.getElementById('passage-ref').innerText = item.passage_ref || "";
+
+        const summaryBox = document.getElementById('summary-box');
+        if (item.summary) {
+          summaryBox.style.display = 'block';
+          document.getElementById('summary').innerText = item.summary;
+        } else {
+          summaryBox.style.display = 'none';
+        }
+
+        renderSections(item.sections);
+
+        const clipBox = document.getElementById('bible-clip-box');
+        const clipFirst = document.getElementById('clip-entry-first');
+        const clipSecond = document.getElementById('clip-entry-second');
+
+        if (item.bible_clip) {
+          const w1 = item.bible_clip.word_first || item.bible_clip.word || "";
+          const d1 = item.bible_clip.definition_first || item.bible_clip.definition || "";
+          const w2 = item.bible_clip.word_second || "";
+          const d2 = item.bible_clip.definition_second || "";
+
+          const hasFirst = Boolean(w1 || d1);
+          const hasSecond = Boolean(w2 || d2);
+
+          if (hasFirst || hasSecond) {
+            clipBox.style.display = 'block';
+
+            if (hasFirst) {
+              clipFirst.style.display = 'block';
+              document.getElementById('clip-word-first').innerText = w1;
+              document.getElementById('clip-def-first').innerText = d1;
+            } else {
+              clipFirst.style.display = 'none';
+            }
+
+            if (hasSecond) {
+              clipSecond.style.display = 'block';
+              document.getElementById('clip-word-second').innerText = w2;
+              document.getElementById('clip-def-second').innerText = d2;
+            } else {
+              clipSecond.style.display = 'none';
+            }
+          } else {
+            clipBox.style.display = 'none';
+          }
+        } else {
+          clipBox.style.display = 'none';
+        }
+
+      } else {
+        document.getElementById('display-day').style.display = 'none';
+        document.getElementById('title').innerText = "La iha meditasaun ba loron ida ne'e";
+        document.getElementById('passage-ref').innerText = `${monthNameEn} ${day}, ${year}`;
+        document.getElementById('summary-box').style.display = 'none';
+        document.getElementById('sections-container').innerHTML = '';
+        document.getElementById('bible-clip-box').style.display = 'none';
+      }
+    }
+
+    function changeDate(offsetDays) {
+      currentDate.setDate(currentDate.getDate() + offsetDays);
+      renderDevotional(currentDate);
+    }
+
+    function resetToToday() {
+      currentDate = new Date();
+      renderDevotional(currentDate);
+    }
+
+    function onDatePick(val) {
+      if (!val) return;
+      const [y, m, d] = val.split('-').map(Number);
+      currentDate = new Date(y, m - 1, d);
+      renderDevotional(currentDate);
+    }
+
+    function adjustFontSize(delta) {
+      currentFontSize = Math.min(Math.max(14, currentFontSize + delta), 22);
+      document.querySelector('main').style.setProperty('--font-size-base', `${currentFontSize}px`);
+    }
+
+    renderDevotional(currentDate);
+  </script>
+</body>
+</html>
